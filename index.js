@@ -1,33 +1,16 @@
+require("dotenv").config();
 const express = require("express");
-
-// Middleware for creating a session id on server and a session cookie on client
-const expressSession = require("express-session");
-
-// cors package prevents CORS errors when using client side API calls
 const cors = require("cors");
-
-// Add http headers, small layer of security
-const helmet = require("helmet");
-
+const app = express();
 // Passport library and Github Strategy
 const passport = require("passport");
 const GitHubStrategy = require("passport-github2").Strategy;
-
 // Knex instance
 const knex = require("knex")(require("./knexfile.js").development);
+// Add http headers, small layer of security
+const helmet = require("helmet");
 
-// Create Express app and also allow for app PORT to be optionally specified by an environment variable
-const app = express();
 const PORT = process.env.PORT || 5050;
-
-// Require .env files for environment variables (keys and secrets)
-require("dotenv").config();
-
-// Enable req.body middleware
-app.use(express.json());
-
-// Initialize HTTP Headers middleware
-app.use(helmet());
 
 // Enable CORS (with additional config options required for cookies)
 app.use(
@@ -36,6 +19,15 @@ app.use(
         credentials: true,
     })
 );
+
+// Middleware for creating a session id on server and a session cookie on client
+const expressSession = require("express-session");
+
+// Enable req.body middleware
+app.use(express.json());
+
+// Initialize HTTP Headers middleware
+app.use(helmet());
 
 // Include express-session middleware (with additional config options required for Passport session)
 app.use(
@@ -140,8 +132,10 @@ passport.deserializeUser((userId, done) => {
 // =========================================
 
 const authRoutes = require("./routes/auth");
+const workoutRoutes = require("./routes/workout");
 
 app.use("/auth", authRoutes);
+app.use("/workout", workoutRoutes);
 
 app.listen(PORT, () => {
     console.log(`🚀 Server listening on port ${PORT}.`);

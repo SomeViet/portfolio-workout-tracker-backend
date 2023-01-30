@@ -52,13 +52,14 @@ router.get("/logout", (req, res) => {
     });
 });
 
-router.get("/success-callback", (req, res) => {
-    if (req.user) {
-        res.status(200).json(req.user);
-    } else {
-        res.status(401).json({ message: "User is not logged in" });
-    }
-});
+// // Testing
+// router.get("/success-callback", (req, res) => {
+//     if (req.user) {
+//         res.status(200).json(req.user);
+//     } else {
+//         res.status(401).json({ message: "User is not logged in" });
+//     }
+// });
 
 // Export this module
 module.exports = router;

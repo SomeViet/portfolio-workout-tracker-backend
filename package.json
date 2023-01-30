@@ -7,11 +7,13 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "migrate": "knex migrate:latest",
         "dev": "nodemon server",
-        "start": "node server"
+        "start": "node server",
+        "seed": "knex seed:run"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "casual": "^1.6.2",
         "cors": "^2.8.5",
         "dotenv": "^16.0.3",
         "express": "^4.18.2",
