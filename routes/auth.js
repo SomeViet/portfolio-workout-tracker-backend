@@ -19,6 +19,7 @@ router.get(
     }),
     (_req, res) => {
         // Successful authentication, redirect to client-side application
+        console.log(res);
         res.redirect(process.env.CLIENT_URL);
     }
 );

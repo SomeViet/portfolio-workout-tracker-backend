@@ -133,9 +133,11 @@ passport.deserializeUser((userId, done) => {
 
 const authRoutes = require("./routes/auth");
 const workoutRoutes = require("./routes/workout");
+const signupRoutes = require("./routes/signup");
 
 app.use("/auth", authRoutes);
 app.use("/workout", workoutRoutes);
+app.use("/signup", signupRoutes);
 
 app.listen(PORT, () => {
     console.log(`🚀 Server listening on port ${PORT}.`);
