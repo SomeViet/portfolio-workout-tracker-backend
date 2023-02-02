@@ -9,6 +9,8 @@ const GitHubStrategy = require("passport-github2").Strategy;
 const knex = require("knex")(require("./knexfile.js").development);
 // Add http headers, small layer of security
 const helmet = require("helmet");
+// Add Json Web Token middleware
+const jwt = require("jsonwebtoken");
 
 const PORT = process.env.PORT || 5050;
 
@@ -38,6 +40,33 @@ app.use(
     })
 );
 
+function getToken(req) {
+    return req.headers.authorization.split(" ")[1];
+}
+
+app.use((req, res, next) => {
+    // Hack the url to check for auth route
+    let authRouteCheck = req.url.substring(0, 5);
+
+    if (req.url === "/signup" || authRouteCheck === "/auth") {
+        next();
+    } else {
+        const token = getToken(req);
+
+        if (token) {
+            if (jwt.verify(token, process.env.JSONSECRETKEY)) {
+                console.log("JSON Verified");
+                next();
+            }
+        } else {
+            console.log("Unauthorized access");
+            res.status(401).json({ message: "Unauthorized Access" });
+        }
+    }
+
+    // token check
+});
+
 // =========== Passport Config ============
 
 // Initialize Passport middleware
@@ -62,7 +91,8 @@ passport.use(
         (_accessToken, _refreshToken, profile, done) => {
             // For our implementation we don't need access or refresh tokens.
             // Profile parameter will be the profile object we get back from GitHub
-            console.log("GitHub profile:", profile);
+
+            // console.log("GitHub profile:", profile);
 
             // First let's check if we already have this user in our DB
             knex("users")
@@ -100,7 +130,7 @@ passport.use(
 // The data comes from `done` function of the strategy
 // The result of the method is attached to the session as `req.session.passport.user = 12345`
 passport.serializeUser((user, done) => {
-    console.log("serializeUser (user object):", user);
+    // console.log("serializeUser (user object):", user);
 
     // Store only the user id in session
     done(null, user.id);
@@ -109,14 +139,14 @@ passport.serializeUser((user, done) => {
 // `deserializeUser` receives a value sent from `serializeUser` `done` function
 // We can then retrieve full user information from our database using the userId
 passport.deserializeUser((userId, done) => {
-    console.log("deserializeUser (user id):", userId);
+    // console.log("deserializeUser (user id):", userId);
 
     // Query user information from the database for currently authenticated user
     knex("users")
         .where({ id: userId })
         .then((user) => {
             // Remember that knex will return an array of records, so we need to get a single record from it
-            console.log("req.user:", user[0]);
+            // console.log("req.user:", user[0]);
 
             // The full user object will be attached to request object as `req.user`
             done(null, user[0]);

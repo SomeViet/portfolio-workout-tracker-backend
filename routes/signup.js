@@ -4,8 +4,6 @@ const knex = require("knex")(require("../knexfile.js").development);
 const bcrypt = require("bcrypt");
 
 const saltRounds = 9;
-const dummy = "test";
-let dbpw = "";
 
 router.post("/", (req, res) => {
     const { username, name, password } = req.body;
@@ -33,7 +31,7 @@ router.post("/", (req, res) => {
                         });
                     } else {
                         // If duplicate username is detected, notify user
-                        console.log(result);
+
                         res.status(400).json({
                             message: "Duplicate Username",
                             duplicate: true,

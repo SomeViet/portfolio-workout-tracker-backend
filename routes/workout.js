@@ -5,6 +5,7 @@ const knex = require("knex")(require("../knexfile.js").development);
 router.get("/", (req, res) => {
     let user = 1; // this needs to be from the req param, which identifies the current logined user
 
+    console.log("Workout accessed");
     knex.select(
         "exercises.id",
         "exercises.day",
@@ -19,8 +20,8 @@ router.get("/", (req, res) => {
         .leftJoin("week_exercise", "week_exercise.exercise_id", "exercises.id")
         .where("user_id", user)
         // .orderBy("posts.id", "desc");
-        .then((response) => {
-            console.log(response);
+        .then((query) => {
+            res.status(200).json({ query });
         });
 });
 

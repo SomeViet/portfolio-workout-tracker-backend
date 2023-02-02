@@ -1,5 +1,8 @@
 const express = require("express");
+const knex = require("knex")(require("../knexfile.js").development);
 const router = express.Router();
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const passport = require("passport");
 
@@ -19,16 +22,94 @@ router.get(
     }),
     (_req, res) => {
         // Successful authentication, redirect to client-side application
-        console.log(res);
         res.redirect(process.env.CLIENT_URL);
     }
 );
+
+// Manual Login
+
+router.post("/login", (req, res) => {
+    const { username, password, github_id } = req.body;
+    let dbpassword = "";
+    let dbgithub_id = "";
+
+    // Search database for password associated with username if it exists
+    knex.select("*")
+        .from("users")
+        .where("username", username)
+        .then((result) => {
+            // If username exists, perform password check
+            if (result[0]) {
+                dbpassword = result[0].password;
+                dbgithub_id = result[0].github_id;
+                dbname = result[0].name;
+
+                if (password && dbpassword) {
+                    bcrypt.compare(
+                        password,
+                        dbpassword,
+                        function (err, result) {
+                            // Successful login
+                            if (result) {
+                                let jsontoken = jwt.sign(
+                                    { name: username },
+                                    process.env.JSONSECRETKEY
+                                );
+                                // Json Token Check
+                                console.log("Json token retrieved");
+                                res.status(200).json({
+                                    name: dbname,
+                                    username: username,
+                                    token: jsontoken,
+                                    message: "Login Successful",
+                                    incorrect: false,
+                                });
+
+                                // All error cases
+                            } else {
+                                res.status(401).json({
+                                    token: "",
+                                    message: "Incorrect username/password",
+                                    incorrect: true,
+                                });
+                            }
+                        }
+                    );
+                } else if (
+                    github_id &&
+                    dbgithub_id &&
+                    github_id === dbgithub_id
+                ) {
+                    let jsontoken = jwt.sign(
+                        {
+                            name: username,
+                        },
+                        process.env.JSONSECRETKEY
+                    );
+                    // Json Token Check
+                    console.log("Json token retrieved");
+                    res.status(200).json({
+                        token: jsontoken,
+                        message: "Login Successful",
+                        incorrect: false,
+                    });
+                } else {
+                    return;
+                }
+            } else {
+                res.status(401).json({
+                    token: "",
+                    message: "Incorrect username/password",
+                    incorrect: true,
+                });
+            }
+        });
+});
 
 // User profile endpoint that requires authentication
 router.get("/profile", (req, res) => {
     // Passport stores authenticated user information on `req.user` object.
     // Comes from done function of `deserializeUser`
-
     // If `req.user` isn't found send back a 401 Unauthorized response
     if (req.user === undefined)
         return res.status(401).json({ message: "Unauthorized" });
@@ -52,15 +133,6 @@ router.get("/logout", (req, res) => {
         res.redirect(process.env.CLIENT_URL);
     });
 });
-
-// // Testing
-// router.get("/success-callback", (req, res) => {
-//     if (req.user) {
-//         res.status(200).json(req.user);
-//     } else {
-//         res.status(401).json({ message: "User is not logged in" });
-//     }
-// });
 
 // Export this module
 module.exports = router;
