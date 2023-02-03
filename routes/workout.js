@@ -5,7 +5,9 @@ const knex = require("knex")(require("../knexfile.js").development);
 router.get("/", (req, res) => {
     let user = 1; // this needs to be from the req param, which identifies the current logined user
 
-    console.log("Workout accessed");
+    // Axios isn't setup to send body data via Get Request, so to send user information via Params
+    let username = req.query.username;
+
     knex.select(
         "exercises.id",
         "exercises.day",

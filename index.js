@@ -55,7 +55,6 @@ app.use((req, res, next) => {
 
         if (token) {
             if (jwt.verify(token, process.env.JSONSECRETKEY)) {
-                console.log("JSON Verified");
                 next();
             }
         } else {
