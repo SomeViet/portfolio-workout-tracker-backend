@@ -7,7 +7,7 @@ exports.up = function (knex) {
         .createTable("users", (table) => {
             table.increments("id").primary();
             table.integer("github_id");
-            table.string("username").notNullable();
+            table.string("username").notNullable().unique;
             table.string("name");
             table.string("password");
             table.timestamp("updated_at").defaultTo(knex.fn.now());

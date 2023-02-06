@@ -18,34 +18,32 @@ router.post("/", (req, res) => {
                 .where("username", username)
                 .then((result) => {
                     // If username is unique, enter it into system
-                    if (!result[0]) {
-                        res.status(200).json({
-                            message: "Signup Successful",
-                            duplicate: false,
-                        });
 
-                        return knex("users").insert({
-                            username: username,
-                            name: name,
-                            password: encryptedPassword,
-                        });
-                    } else {
-                        // If duplicate username is detected, notify user
+                    res.status(200).json({
+                        message: "Signup Successful",
+                        duplicate: false,
+                    });
 
-                        res.status(400).json({
-                            message: "Duplicate Username",
-                            duplicate: true,
-                        });
-                    }
+                    return knex("users").insert({
+                        username: username,
+                        name: name,
+                        password: encryptedPassword,
+                    });
+
+                    // // If duplicate username is detected, notify user
+                    // ****KT - put this into catch error***
+                    // res.status(400).json({
+                    //     message: "Duplicate Username",
+                    //     duplicate: true,
+                })
+                .catch((error) => {
+                    console.log(
+                        "Figure out how to handle MYsqlError something something",
+                        error
+                    );
                 });
         });
     });
-
-    // bcrypt.compare(dummy, dbpw, function (err, result) {
-    //     if (result) {
-    //         // console.log(result, "test3");
-    //     }
-    // });
 });
 
 module.exports = router;
