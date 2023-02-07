@@ -34,15 +34,28 @@ router.get("/", (req, res) => {
 
 router.post("/addexercise", (req, res) => {
     let exercise = req.body;
-    console.log(exercise);
 
     if (exercise) {
         knex.raw(
+            // Call the stored procedure to add exercise with the parameters
+            // Order of parameters matter - in relation to stores procedure declaration
             `call portfolio_workout_tracker.create_exercise('${exercise.username}','${exercise.week_id}' , '${exercise.day}', '${exercise.exercise}', '${exercise.sets}', '${exercise.reps}', '${exercise.weight}')`
         )
             .then((result) => {
-                // take payload and update workoutData
-                console.log(result);
+                let condensedResult = result[0][0][0];
+
+                // If the row was updated properly
+                if (condensedResult) {
+                    // take payload and return it to update workoutData
+                    condensedResult.exerciseId;
+
+                    res.status(200).json({
+                        message: "Exercise Added",
+                        exerciseId: condensedResult.exerciseId,
+                    });
+                } else {
+                    res.status(400).json({ message: "No record was added" });
+                }
             })
             .catch((error) => {
                 console.log(error);
