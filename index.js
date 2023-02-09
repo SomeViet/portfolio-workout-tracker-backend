@@ -91,8 +91,6 @@ passport.use(
             // For our implementation we don't need access or refresh tokens.
             // Profile parameter will be the profile object we get back from GitHub
 
-            // console.log("GitHub profile:", profile);
-
             // First let's check if we already have this user in our DB
             knex("users")
                 .select("id")
@@ -109,9 +107,17 @@ passport.use(
                                 username: profile.username,
                                 name: profile._json.name,
                             })
-                            .then((userId) => {
-                                // Pass the user object to serialize function
-                                done(null, { id: userId[0] });
+                            .then((result) => {
+                                let userId = result[0];
+                                knex("weeks")
+                                    .insert({
+                                        user_id: userId,
+                                        week_id: 1,
+                                    })
+                                    .then((_) => {
+                                        // Pass the user object to serialize function
+                                        done(null, { id: userId });
+                                    });
                             })
                             .catch((err) => {
                                 console.log("Error creating a user", err);

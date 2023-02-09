@@ -19,16 +19,33 @@ router.post("/", (req, res) => {
                 .then((result) => {
                     // If username is unique, enter it into system
 
-                    res.status(200).json({
-                        message: "Signup Successful",
-                        duplicate: false,
-                    });
-
-                    return knex("users").insert({
-                        username: username,
-                        name: name,
-                        password: encryptedPassword,
-                    });
+                    // Generate user record and  initial week record
+                    return knex("users")
+                        .insert({
+                            username: username,
+                            name: name,
+                            password: encryptedPassword,
+                        })
+                        .then((result) => {
+                            let newUserId = result[0];
+                            knex("weeks")
+                                .insert({
+                                    user_id: newUserId,
+                                    week_id: 1,
+                                })
+                                .then((_) => {
+                                    res.status(200).json({
+                                        message: "Signup Successful",
+                                        duplicate: false,
+                                    });
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
 
                     // // If duplicate username is detected, notify user
                     // ****KT - put this into catch error***

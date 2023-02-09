@@ -40,6 +40,7 @@ router.post("/login", (req, res) => {
         .then((result) => {
             // If username exists, perform password check
             if (result[0]) {
+                dbuserid = result[0].id;
                 dbpassword = result[0].password;
                 dbgithub_id = result[0].github_id;
                 dbname = result[0].name;
@@ -58,6 +59,7 @@ router.post("/login", (req, res) => {
                                 // Json Token Check
                                 console.log("Json token retrieved");
                                 res.status(200).json({
+                                    userid: dbuserid,
                                     name: dbname,
                                     username: username,
                                     token: jsontoken,
