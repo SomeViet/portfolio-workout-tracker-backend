@@ -69,4 +69,56 @@ router.post("/addexercise", (req, res) => {
     } else console.log(exercise);
 });
 
+router.post("/addweek", (req, res) => {
+    let newWeekRecord = req.body;
+
+    knex("weeks")
+        .insert(newWeekRecord)
+        .then((_) => {
+            res.status(200).json({ message: "Week Added" });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+});
+
+router.delete("/deleteweek", (req, res) => {
+    let deleteWeekRecord = req.body;
+    console.log(deleteWeekRecord.week_id, deleteWeekRecord.user_id);
+
+    knex("exercises")
+        .leftJoin("week_exercise", "week_exercise.exercise_id", "exercises.id")
+        .where("week_exercise.week_id", deleteWeekRecord.week_id)
+        .where("week_exercise.user_id", deleteWeekRecord.user_id)
+        .del()
+        .then(() => {
+            return knex("weeks")
+                .where(deleteWeekRecord)
+                .del()
+                .then((result) => {
+                    console.log("Delete Succeeded");
+                    res.status(200).json({ message: "Week Deleted" });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+
+    knex("weeks")
+        .where(deleteWeekRecord)
+        .del()
+        .then((result) => {
+            if (result === 1) {
+                console.log("Delete Succeeded");
+                res.status(200).json({ message: "Week Deleted" });
+            } else console.log(result);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+});
+
 module.exports = router;

@@ -39,11 +39,18 @@ exports.up = function (knex) {
             table.integer("exercise_id").unsigned().notNullable();
             table.timestamp("updated_at").defaultTo(knex.fn.now());
 
-            table.foreign("user_id").references("user_id").inTable("weeks");
-
-            table.foreign("week_id").references("week_id").inTable("weeks");
-
-            table.foreign("exercise_id").references("id").inTable("exercises");
+            table
+                .foreign(["week_id", "user_id"])
+                .references(["week_id", "user_id"])
+                .inTable("weeks")
+                .onDelete("CASCADE")
+                .onUpdate("CASCADE");
+            table
+                .foreign("exercise_id")
+                .references("id")
+                .inTable("exercises")
+                .onDelete("CASCADE")
+                .onUpdate("CASCADE");
         });
 };
 
