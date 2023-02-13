@@ -38,6 +38,8 @@ router.get("/", (req, res) => {
         });
 });
 
+// ***************EXERCISE***************
+
 router.post("/addexercise", (req, res) => {
     let exercise = req.body;
 
@@ -68,6 +70,27 @@ router.post("/addexercise", (req, res) => {
             });
     } else console.log(exercise);
 });
+
+router.delete("/deleteexercise", (req, res) => {
+    let deleteExerciseRecord = req.body;
+
+    knex("exercises")
+        .where(deleteExerciseRecord)
+        .del()
+        .then((result) => {
+            if (result === 1) {
+                console.log("Delete Succeeded");
+                res.status(200).json({ message: "Exercise Deleted" });
+            } else {
+                console.log(result);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+});
+
+// ***************WEEK***************
 
 router.post("/addweek", (req, res) => {
     let newWeekRecord = req.body;
