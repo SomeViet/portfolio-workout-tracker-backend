@@ -22,7 +22,7 @@ router.get(
     }),
     (_req, res) => {
         // Successful authentication, redirect to client-side application
-        res.redirect(process.env.CLIENT_URL);
+        res.redirect(process.env.CLIENT_URL + "#");
     }
 );
 

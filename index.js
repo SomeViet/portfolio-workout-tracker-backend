@@ -40,6 +40,8 @@ app.use(
     })
 );
 
+app.use(express.static(__dirname + "./../build"));
+
 function getToken(req) {
     return req.headers.authorization.split(" ")[1];
 }
