@@ -5,16 +5,16 @@
  */
 
 require("dotenv").config();
-const { SQLUSER, SQLPW } = process.env;
+const { SQLUSER, SQLPW, SQLHOST, SQLDATABASE } = process.env;
 
 module.exports = {
     development: {
         client: "mysql",
         connection: {
-            host: "127.0.0.1",
+            host: SQLHOST,
             user: SQLUSER,
             password: SQLPW,
-            database: "portfolio_workout_tracker",
+            database: SQLDATABASE,
             charset: "utf8",
         },
     },
