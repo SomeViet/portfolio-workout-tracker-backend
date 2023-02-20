@@ -32,18 +32,21 @@ app.use(express.json());
 app.use(helmet());
 
 // Add Redis Data Store
-const RedisStore = require("connect-redis")(expressSession);
+let RedisStore = require("connect-redis")(expressSession);
+const { createClient } = require("redis");
+let redisClient = createClient({
+    url: `rediss://red-cfpimeh4rebfdat82rr0:Qy4AXC80neNvRkv2T9ltnbY3NBIVUxm6@oregon-redis.render.com:6379`,
+    legacyMode: true,
+});
+redisClient.connect().catch(console.error);
 
 // Include express-session middleware (with additional config options required for Passport session)
 app.use(
     expressSession({
-        store: new RedisStore({
-            host: "red-cfpimeh4rebfdat82rr0",
-            port: 6379,
-        }),
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: true,
+        store: new RedisStore({ client: redisClient }),
     })
 );
 
@@ -105,6 +108,7 @@ passport.use(
             // Profile parameter will be the profile object we get back from GitHub
 
             // First let's check if we already have this user in our DB
+
             knex("users")
                 .select("id")
                 .where({ github_id: profile.id })
