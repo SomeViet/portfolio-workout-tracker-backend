@@ -116,11 +116,9 @@ router.get("/profile", (req, res) => {
     // If `req.user` isn't found send back a 401 Unauthorized response
 
     if (req.user === undefined) {
-        console.log("Test1");
         return res.status(401).json({ message: "Unauthorized" });
     }
 
-    console.log("Test2");
     // If user is currently authenticated, send back user info
     res.status(200).json(req.user);
 });

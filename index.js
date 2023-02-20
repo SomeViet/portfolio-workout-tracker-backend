@@ -31,9 +31,16 @@ app.use(express.json());
 // Initialize HTTP Headers middleware
 app.use(helmet());
 
+// Add Redis Data Store
+const RedisStore = require("connect-redis")(expressSession);
+
 // Include express-session middleware (with additional config options required for Passport session)
 app.use(
     expressSession({
+        store: new RedisStore({
+            host: "red-cfpimeh4rebfdat82rr0",
+            port: 6379,
+        }),
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: true,
