@@ -11,7 +11,7 @@ require("dotenv").config();
 // Create a login endpoint which kickstarts the auth process and takes user to a consent page
 // Here, you can also specify exactly what type of access you are requesting by configuring scope: https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
 // ie: passport.authenticate("github", { scope: ["user:email", "repo"] })
-router.get("/github", passport.authenticate("github"));
+router.get("/github", passport.authenticate("github", { session: false }));
 
 // GitHub auth Callback: http://localhost:5050/auth/github/callback
 // This is the endpoint that GitHub will redirect to after user responds on consent page
@@ -19,12 +19,11 @@ router.get(
     "/github/callback",
     passport.authenticate("github", {
         failureRedirect: `${process.env.CLIENT_URL}/auth-fail`,
-        session: false,
     }),
     (_req, res) => {
         // Successful authentication, redirect to client-side application
-        res.redirect(process.env.CLIENT_URL + "#");
         console.log("Github Auth Success");
+        res.redirect(process.env.CLIENT_URL + "#");
     }
 );
 
