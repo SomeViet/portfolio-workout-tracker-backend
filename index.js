@@ -65,7 +65,6 @@ app.use((req, res, next) => {
     let authRouteCheck = req.url.substring(0, 5);
 
     if (req.url === "/signup" || authRouteCheck === "/auth") {
-        console.log(req.user, "Token Check Level");
         next();
     } else {
         const token = getToken(req);
