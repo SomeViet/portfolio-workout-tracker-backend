@@ -119,6 +119,7 @@ router.get("/profile", (req, res) => {
     console.log(req.user, "This is req");
 
     if (req.user === undefined) {
+        console.log("Req.User is undefined");
         return res.status(401).json({ message: "Unauthorized" });
     }
 
