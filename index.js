@@ -35,7 +35,7 @@ app.use(helmet());
 let RedisStore = require("connect-redis")(expressSession);
 const { createClient } = require("redis");
 let redisClient = createClient({
-    url: `rediss://red-cfpimeh4rebfdat82rr0:Qy4AXC80neNvRkv2T9ltnbY3NBIVUxm6@oregon-redis.render.com:6379`,
+    url: process.env.REDIS_URL,
     legacyMode: true,
 });
 redisClient.connect().catch(console.error);
