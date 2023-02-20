@@ -115,7 +115,7 @@ router.get("/profile", (req, res) => {
     // Comes from done function of `deserializeUser`
     // If `req.user` isn't found send back a 401 Unauthorized response
 
-    console.log(req, "This is req");
+    // console.log(req, "This is req");
     console.log(req.user, "This is req");
 
     if (req.user === undefined) {
