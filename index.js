@@ -54,6 +54,8 @@ app.use((req, res, next) => {
     // Hack the url to check for auth route
     let authRouteCheck = req.url.substring(0, 5);
 
+    console.log(req);
+
     if (req.url === "/signup" || authRouteCheck === "/auth") {
         next();
     } else {
