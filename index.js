@@ -155,7 +155,7 @@ passport.serializeUser((user, done) => {
 // We can then retrieve full user information from our database using the userId
 passport.deserializeUser((userId, done) => {
     // console.log("deserializeUser (user id):", userId);
-
+    console.log(userId, "Deserialize Before KNEX");
     // Query user information from the database for currently authenticated user
     knex("users")
         .where({ id: userId })
