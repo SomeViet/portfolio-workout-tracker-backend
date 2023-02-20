@@ -77,7 +77,7 @@ app.use(passport.initialize());
 // by converting session id from the client cookie into a deserialized user object.
 // This middleware also requires `serializeUser` and `deserializeUser` functions written below
 // Additional information: https://stackoverflow.com/questions/22052258/what-does-passport-session-middleware-do
-app.use(passport.session());
+app.use(passport.authenticate("session"));
 
 // Initialize GitHub strategy middleware
 // http://www.passportjs.org/packages/passport-github2/
