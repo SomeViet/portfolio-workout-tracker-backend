@@ -19,6 +19,7 @@ router.get(
     "/github/callback",
     passport.authenticate("github", {
         failureRedirect: `${process.env.CLIENT_URL}/auth-fail`,
+        session: false,
     }),
     (_req, res) => {
         // Successful authentication, redirect to client-side application
