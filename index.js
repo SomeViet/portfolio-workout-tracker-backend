@@ -54,8 +54,6 @@ app.use((req, res, next) => {
     // Hack the url to check for auth route
     let authRouteCheck = req.url.substring(0, 5);
 
-    console.log(req);
-
     if (req.url === "/signup" || authRouteCheck === "/auth") {
         next();
     } else {
@@ -98,6 +96,7 @@ passport.use(
         (_accessToken, _refreshToken, profile, done) => {
             // For our implementation we don't need access or refresh tokens.
             // Profile parameter will be the profile object we get back from GitHub
+            console.log(profile);
 
             // First let's check if we already have this user in our DB
             knex("users")
