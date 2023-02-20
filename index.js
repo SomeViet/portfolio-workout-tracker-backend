@@ -103,17 +103,17 @@ passport.use(
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
             callbackURL: process.env.GITHUB_CALLBACK_URL,
         },
-        async (_accessToken, _refreshToken, profile, done) => {
+        (_accessToken, _refreshToken, profile, done) => {
             // For our implementation we don't need access or refresh tokens.
             // Profile parameter will be the profile object we get back from GitHub
 
             // First let's check if we already have this user in our DB
 
-            await knex("users")
+            knex("users")
                 .select("id")
                 .where({ github_id: profile.id })
                 .then((user) => {
-                    console.log(user);
+                    console.log(user, "Passport found a user");
                     if (user.length) {
                         // If user is found, pass the user object to serialize function
                         done(null, user[0]);
