@@ -103,13 +103,13 @@ passport.use(
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
             callbackURL: process.env.GITHUB_CALLBACK_URL,
         },
-        (_accessToken, _refreshToken, profile, done) => {
+        async (_accessToken, _refreshToken, profile, done) => {
             // For our implementation we don't need access or refresh tokens.
             // Profile parameter will be the profile object we get back from GitHub
 
             // First let's check if we already have this user in our DB
 
-            knex("users")
+            await knex("users")
                 .select("id")
                 .where({ github_id: profile.id })
                 .then((user) => {
