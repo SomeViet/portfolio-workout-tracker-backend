@@ -41,6 +41,8 @@ let redisClient = createClient({
 redisClient.connect().catch(console.error);
 
 // Include express-session middleware (with additional config options required for Passport session)
+app.use(express.static(__dirname + "./../build"));
+
 app.use(
     expressSession({
         secret: process.env.SESSION_SECRET,
@@ -49,8 +51,6 @@ app.use(
         store: new RedisStore({ client: redisClient }),
     })
 );
-
-app.use(express.static(__dirname + "./../build"));
 
 function getToken(req) {
     let split = req.headers.authorization.split(" ");
