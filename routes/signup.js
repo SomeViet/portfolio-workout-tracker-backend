@@ -19,39 +19,43 @@ router.post("/", (req, res) => {
                 .then((result) => {
                     // If username is unique, enter it into system
 
-                    // Generate user record and  initial week record
-                    return knex("users")
-                        .insert({
-                            username: username,
-                            name: name,
-                            password: encryptedPassword,
-                        })
-                        .then((result) => {
-                            let newUserId = result[0];
-                            knex("weeks")
-                                .insert({
-                                    user_id: newUserId,
-                                    week_id: 1,
-                                })
-                                .then((_) => {
-                                    res.status(200).json({
-                                        message: "Signup Successful",
-                                        duplicate: false,
-                                    });
-                                })
-                                .catch((error) => {
-                                    console.log(error);
-                                });
-                        })
-                        .catch((error) => {
-                            console.log(error);
+                    let userInSystem = result[0]?.id;
+                    console.log(result[0]?.id);
+                    if (userInSystem) {
+                        return res.status(406).json({
+                            duplicate: true,
+                            signUpSuccessful: false,
                         });
-
-                    // // If duplicate username is detected, notify user
-                    // ****KT - put this into catch error***
-                    // res.status(400).json({
-                    //     message: "Duplicate Username",
-                    //     duplicate: true,
+                    }
+                    // Generate user record and initial week record
+                    else
+                        return knex("users")
+                            .insert({
+                                username: username,
+                                name: name,
+                                password: encryptedPassword,
+                            })
+                            .then((result) => {
+                                let newUserId = result[0];
+                                knex("weeks")
+                                    .insert({
+                                        user_id: newUserId,
+                                        week_id: 1,
+                                    })
+                                    .then((_) => {
+                                        res.status(200).json({
+                                            message: "Signup Successful",
+                                            duplicate: false,
+                                            signUpSuccessful: true,
+                                        });
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                    });
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            });
                 })
                 .catch((error) => {
                     console.log(

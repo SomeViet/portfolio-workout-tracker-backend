@@ -47,7 +47,7 @@ router.post("/addexercise", (req, res) => {
         knex.raw(
             // Call the stored procedure to add exercise with the parameters
             // Order of parameters matter - in relation to stores procedure declaration
-            `call portfolio_workout_tracker.create_exercise('${exercise.userId}','${exercise.week_id}' , '${exercise.day}', '${exercise.exercise}', '${exercise.sets}', '${exercise.reps}', '${exercise.weight}')`
+            `call ${process.env.SQLDATABASE}.create_exercise('${exercise.userId}','${exercise.week_id}' , '${exercise.day}', '${exercise.exercise}', '${exercise.sets}', '${exercise.reps}', '${exercise.weight}')`
         )
             .then((result) => {
                 let condensedResult = result[0][0][0];
@@ -125,19 +125,6 @@ router.delete("/deleteweek", (req, res) => {
                 .catch((error) => {
                     console.log(error);
                 });
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-
-    knex("weeks")
-        .where(deleteWeekRecord)
-        .del()
-        .then((result) => {
-            if (result === 1) {
-                console.log("Delete Succeeded");
-                res.status(200).json({ message: "Week Deleted" });
-            } else console.log(result);
         })
         .catch((error) => {
             console.log(error);

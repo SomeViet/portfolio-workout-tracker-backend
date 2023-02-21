@@ -123,17 +123,9 @@ router.get("/profile", (req, res) => {
 // Create a logout endpoint
 router.get("/logout", (req, res) => {
     // Passport adds the logout method to request, it will end user session
-    req.logout((error) => {
-        // This callback function runs after the logout function
-        if (error) {
-            return res.status(500).json({
-                message: "Server error, please try again later",
-                error: error,
-            });
-        }
-        // Redirect the user back to client-side application
-        res.redirect(process.env.CLIENT_URL);
-    });
+
+    // Redirect the user back to client-side application
+    res.redirect(process.env.CLIENT_URL);
 });
 
 // Export this module
