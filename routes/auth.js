@@ -8,24 +8,24 @@ const passport = require("passport");
 
 require("dotenv").config();
 
-// Create a login endpoint which kickstarts the auth process and takes user to a consent page
-// Here, you can also specify exactly what type of access you are requesting by configuring scope: https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
-// ie: passport.authenticate("github", { scope: ["user:email", "repo"] })
-router.get("/github", passport.authenticate("github"));
+// // Create a login endpoint which kickstarts the auth process and takes user to a consent page
+// // Here, you can also specify exactly what type of access you are requesting by configuring scope: https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
+// // ie: passport.authenticate("github", { scope: ["user:email", "repo"] })
+// router.get("/github", passport.authenticate("github"));
 
-// GitHub auth Callback: http://localhost:5050/auth/github/callback
-// This is the endpoint that GitHub will redirect to after user responds on consent page
-router.get(
-    "/github/callback",
-    passport.authenticate("github", {
-        failureRedirect: `${process.env.CLIENT_URL}/auth-fail`,
-    }),
-    (_req, res) => {
-        // Successful authentication, redirect to client-side application
-        console.log("Github Auth Success");
-        res.redirect(process.env.CLIENT_URL + "#");
-    }
-);
+// // GitHub auth Callback: http://localhost:5050/auth/github/callback
+// // This is the endpoint that GitHub will redirect to after user responds on consent page
+// router.get(
+//     "/github/callback",
+//     passport.authenticate("github", {
+//         failureRedirect: `${process.env.CLIENT_URL}/auth-fail`,
+//     }),
+//     (_req, res) => {
+//         // Successful authentication, redirect to client-side application
+//         console.log("Github Auth Success");
+//         res.redirect(process.env.CLIENT_URL + "#");
+//     }
+// );
 
 // Manual Login
 
@@ -33,6 +33,8 @@ router.post("/login", (req, res) => {
     const { username, password, github_id } = req.body;
     let dbpassword = "";
     let dbgithub_id = "";
+
+    console.log(username, password, github_id);
 
     // Search database for password associated with username if it exists
     knex.select("*")
@@ -116,11 +118,8 @@ router.get("/profile", (req, res) => {
     // If `req.user` isn't found send back a 401 Unauthorized response
 
     // console.log(req, "This is req");
-    console.log(req.user, "This is req.user");
-    console.log(req.session, "This is req.session");
 
     if (req.user === undefined) {
-        console.log("Req.User is undefined");
         return res.status(405).json({ message: "Unauthorized" });
     }
 
@@ -130,18 +129,8 @@ router.get("/profile", (req, res) => {
 
 // Create a logout endpoint
 router.get("/logout", (req, res) => {
-    // Passport adds the logout method to request, it will end user session
-    req.logout((error) => {
-        // This callback function runs after the logout function
-        if (error) {
-            return res.status(500).json({
-                message: "Server error, please try again later",
-                error: error,
-            });
-        }
-        // Redirect the user back to client-side application
-        res.redirect(process.env.CLIENT_URL);
-    });
+    // Redirect the user back to client-side application
+    res.redirect(process.env.CLIENT_URL);
 });
 
 // Export this module
