@@ -101,8 +101,7 @@ passport.use(
         {
             clientID: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackURL:
-                "https://sv-workout-tracker-backend.onrender.com/auth/github/callback",
+            callbackURL: process.env.GITHUB_CALLBACK_URL,
         },
         (_accessToken, _refreshToken, profile, done) => {
             // For our implementation we don't need access or refresh tokens.

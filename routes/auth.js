@@ -18,12 +18,12 @@ router.get("/github", passport.authenticate("github"));
 router.get(
     "/github/callback",
     passport.authenticate("github", {
-        failureRedirect: `https://sv-workout-tracker.onrender.com/auth-fail`,
+        failureRedirect: `${process.env.CLIENT_URL}/auth-fail`,
     }),
     (_req, res) => {
         // Successful authentication, redirect to client-side application
         console.log("Github Auth Success");
-        res.redirect("https://sv-workout-tracker.onrender.com/" + "#");
+        res.redirect(process.env.CLIENT_URL + "#");
     }
 );
 
@@ -121,7 +121,7 @@ router.get("/profile", (req, res) => {
 
     if (req.user === undefined) {
         console.log("Req.User is undefined");
-        return res.status(401).json({ message: "Unauthorized" });
+        return res.status(405).json({ message: "Unauthorized" });
     }
 
     // If user is currently authenticated, send back user info
@@ -140,7 +140,7 @@ router.get("/logout", (req, res) => {
             });
         }
         // Redirect the user back to client-side application
-        res.redirect("https://sv-workout-tracker.onrender.com/");
+        res.redirect(process.env.CLIENT_URL);
     });
 });
 
