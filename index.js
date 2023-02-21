@@ -101,7 +101,8 @@ passport.use(
         {
             clientID: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackURL: process.env.GITHUB_CALLBACK_URL,
+            callbackURL:
+                "https://sv-workout-tracker-backend.onrender.com/auth/github/callback",
         },
         (_accessToken, _refreshToken, profile, done) => {
             // For our implementation we don't need access or refresh tokens.
@@ -113,9 +114,12 @@ passport.use(
                 .select("id")
                 .where({ github_id: profile.id })
                 .then((user) => {
-                    console.log(user, "Passport found a user");
                     if (user.length) {
                         // If user is found, pass the user object to serialize function
+                        console.log(
+                            user[0],
+                            "This is passed from Github Strategy"
+                        );
                         done(null, user[0]);
                     } else {
                         // If user isn't found, we create a record
@@ -156,7 +160,7 @@ passport.use(
 passport.serializeUser((user, done) => {
     // console.log("serializeUser (user object):", user);
 
-    console.log(user, "Serializing user");
+    console.log(user.id, "Serializing user");
 
     // Store only the user id in session
     done(null, user.id);

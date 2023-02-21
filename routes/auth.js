@@ -18,12 +18,12 @@ router.get("/github", passport.authenticate("github"));
 router.get(
     "/github/callback",
     passport.authenticate("github", {
-        failureRedirect: `${process.env.CLIENT_URL}/auth-fail`,
+        failureRedirect: `https://sv-workout-tracker.onrender.com/auth-fail`,
     }),
     (_req, res) => {
         // Successful authentication, redirect to client-side application
         console.log("Github Auth Success");
-        res.redirect(process.env.CLIENT_URL + "#");
+        res.redirect("https://sv-workout-tracker.onrender.com/" + "#");
     }
 );
 
@@ -140,7 +140,7 @@ router.get("/logout", (req, res) => {
             });
         }
         // Redirect the user back to client-side application
-        res.redirect(process.env.CLIENT_URL);
+        res.redirect("https://sv-workout-tracker.onrender.com/");
     });
 });
 
